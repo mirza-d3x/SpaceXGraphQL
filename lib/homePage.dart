@@ -6,7 +6,7 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: Text("Graph QL Demo"),
       ),
@@ -14,21 +14,27 @@ class MyHomePage extends StatelessWidget {
         options: QueryOptions(
           document: gql(readRepositories),
         ),
-        builder: (QueryResult result,
+        builder: (QueryResult? result,
             {VoidCallback? refetch, FetchMore? fetchMore}) {
-          if (result.hasException) {
+          print(result.toString());
+          if (result!.hasException) {
             return Text(result.exception.toString());
           }
 
           if (result.isLoading) {
             return Center(child: CircularProgressIndicator());
           }
+          if (result != null) {
+            print(result.toString());
+          }
           return ListView.builder(
-              itemCount: result.data!["artworkAttributionClasses"].length,
+              // itemCount: 2,
+              itemCount: result.data!["launchesPast"].length,
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
                   title: Text(
-                      result.data!["mission_name"][index]["rocket"][index]["rocket_name"]),
+                    result.data!["launchesPast"][index]["mission_name"],
+                  ),
                 );
               });
         },
@@ -36,6 +42,7 @@ class MyHomePage extends StatelessWidget {
     );
   }
 }
+
 String readRepositories = r"""
  {
   launchesPast(limit: 5) {
